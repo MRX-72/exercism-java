@@ -1,4 +1,4 @@
-"""Shared isolated reference-test runner for the S&AI coursework checks."""
+"""Shared isolated reference-test runner for the coursework checks."""
 
 from __future__ import annotations
 
