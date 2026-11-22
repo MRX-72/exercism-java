@@ -11,7 +11,7 @@ import tempfile
 import time
 import xml.etree.ElementTree as ET
 from pathlib import Path
-from typing import Any, Callable
+from typing import Any, Callable, Sequence
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -72,6 +72,7 @@ def run_reference_tests(
     *,
     mutation: Callable[[Path], None] | None = None,
     expected_failure: str | None = None,
+    test_arguments: Sequence[str] = (),
 ) -> dict[str, Any]:
     """Copy an exercise including dotfiles, install its reference as solution, and run Gradle."""
     exercise, config = load_config(slug)
@@ -99,14 +100,22 @@ def run_reference_tests(
             shutil.copy2(wrapper_source / "gradlew", wrapper)
             shutil.copytree(wrapper_source / "gradle", scratch / "gradle")
         wrapper.chmod(wrapper.stat().st_mode | 0o111)
-        process = subprocess.run(
-            [str(wrapper), "test", "--no-daemon", "--console=plain"],
-            cwd=scratch,
-            capture_output=True,
-            text=True,
-            timeout=300,
-            env=java_environment(),
-        )
+        try:
+            process = subprocess.run(
+                [str(wrapper), "test", "--no-daemon", "--console=plain", *test_arguments],
+                cwd=scratch,
+                capture_output=True,
+                text=True,
+                timeout=300,
+                env=java_environment(),
+            )
+            exit_code = process.returncode
+            stdout = process.stdout
+            stderr = process.stderr
+        except subprocess.TimeoutExpired as error:
+            exit_code = -1
+            stdout = error.stdout.decode(errors="replace") if isinstance(error.stdout, bytes) else (error.stdout or "")
+            stderr = error.stderr.decode(errors="replace") if isinstance(error.stderr, bytes) else (error.stderr or "")
         test_count = failure_count = skipped_count = 0
         failed_cases: list[str] = []
         for report in (scratch / "build" / "test-results" / "test").glob("*.xml"):
@@ -127,15 +136,15 @@ def run_reference_tests(
             raise RuntimeError("Learner source files changed while the isolated checker ran")
         result = {
             "exercise": slug,
-            "exit_code": process.returncode,
+            "exit_code": exit_code,
             "tests": test_count,
             "failures": failure_count,
             "skipped": skipped_count,
             "failed_cases": failed_cases,
             "elapsed_seconds": round(time.time() - started, 3),
             "learner_hashes_unchanged": True,
-            "stdout_tail": process.stdout[-3000:],
-            "stderr_tail": process.stderr[-3000:],
+            "stdout_tail": stdout[-3000:],
+            "stderr_tail": stderr[-3000:],
         }
     (evidence_dir / "reference-test-results.json").write_text(
         json.dumps(result, indent=2) + "\n", encoding="utf-8"
