@@ -73,7 +73,11 @@ def main() -> int:
         + "\n",
         encoding="utf-8",
     )
-    print(f"{TASK}: reference passes ({reference['tests']} cases); mutant fails; zero-test run rejected; learner files unchanged")
+    print(
+        f"{TASK}: reference suite: {reference['tests']} cases discovered, "
+        f"{reference['failures']} failures, {reference['skipped']} skipped; "
+        "mutant fails; zero-test run rejected; learner files unchanged"
+    )
     return 0
 
 
