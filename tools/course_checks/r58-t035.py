@@ -95,7 +95,10 @@ def main() -> int:
         writer = csv.writer(stream)
         writer.writerow(("input_size", "predicate_calls", "kept_values", "median_nanoseconds"))
         writer.writerows(rows)
-    print(f"{TASK}: {test_result['tests']} reference tests passed; measured {len(rows)} valid sizes")
+    print(
+        f"{TASK}: {test_result['tests']} cases discovered, {test_result['failures']} failures, "
+        f"{test_result['skipped']} skipped; measured {len(rows)} valid sizes"
+    )
     return 0
 
 
