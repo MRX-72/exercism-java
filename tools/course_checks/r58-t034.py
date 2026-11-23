@@ -74,7 +74,10 @@ def main() -> int:
         raise RuntimeError("ListOps outputs differ from the baseline")
     (EVIDENCE / "parity-output.txt").write_text(before, encoding="utf-8")
     test_result = run_reference_tests("list-ops", EVIDENCE)
-    print(f"{TASK}: baseline and refactored outputs match; {test_result['tests']} reference tests passed")
+    print(
+        f"{TASK}: baseline and refactored outputs match; {test_result['tests']} cases discovered, "
+        f"{test_result['failures']} failures, {test_result['skipped']} skipped"
+    )
     return 0
 
 
