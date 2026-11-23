@@ -44,7 +44,10 @@ def main() -> int:
         if result.returncode != 0 or result.stdout != EXPECTED:
             raise RuntimeError(f"Unexpected micro-example output: {result.stdout!r}; {result.stderr}")
     (EVIDENCE / "micro-example-output.txt").write_text(result.stdout, encoding="utf-8")
-    print(f"{TASK}: micro-example output matches; {test_result['tests']} reference tests passed")
+    print(
+        f"{TASK}: micro-example output matches; reference suite: {test_result['tests']} cases "
+        f"discovered, {test_result['failures']} failures, {test_result['skipped']} skipped"
+    )
     return 0
 
 
