@@ -57,7 +57,11 @@ def main() -> int:
     report.extend(["Invalid fixtures:", *[f"- {item}" for item in fixtures]])
     (EVIDENCE / "path-check-results.md").write_text("\n".join(report) + "\n", encoding="utf-8")
     test_result = run_reference_tests(SLUG, EVIDENCE)
-    print(f"{TASK}: all declared paths valid; 3 invalid fixtures rejected; {test_result['tests']} reference tests passed")
+    print(
+        f"{TASK}: all declared paths valid; 3 invalid fixtures rejected; reference suite: "
+        f"{test_result['tests']} cases discovered, {test_result['failures']} failures, "
+        f"{test_result['skipped']} skipped"
+    )
     return 0
 
 
