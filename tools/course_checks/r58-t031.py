@@ -46,7 +46,11 @@ def main() -> int:
         encoding="utf-8",
     )
     test_result = run_reference_tests(SLUG, EVIDENCE)
-    print(f"{TASK}: metadata valid; {test_result['tests']} reference tests passed; 10 included, 0 excluded")
+    print(
+        f"{TASK}: metadata valid; {test_result['tests']} cases discovered, "
+        f"{test_result['failures']} failures, {test_result['skipped']} skipped; "
+        "10 included, 0 excluded"
+    )
     return 0
 
 
