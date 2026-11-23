@@ -71,7 +71,10 @@ def main() -> int:
         if result.returncode != 0 or result.stdout != "true\ntrue\nfalse\n":
             raise RuntimeError(f"Contract cases failed: {result.stdout!r}; {result.stderr}")
     (EVIDENCE / "decision-table-results.txt").write_text(result.stdout, encoding="utf-8")
-    print(f"{TASK}: 3 decision-table cases match; {test_result['tests']} reference tests passed")
+    print(
+        f"{TASK}: 3 decision-table cases match; reference suite: {test_result['tests']} cases "
+        f"discovered, {test_result['failures']} failures, {test_result['skipped']} skipped"
+    )
     return 0
 
 
