@@ -83,7 +83,10 @@ def main() -> int:
         encoding="utf-8",
     )
     result = run_reference_tests(SLUG, EVIDENCE)
-    print(f"{TASK}: 14 cases mapped; fresh syncs match; {result['tests']} reference tests passed")
+    print(
+        f"{TASK}: 14 cases mapped; fresh syncs match; {result['tests']} cases discovered, "
+        f"{result['failures']} failures, {result['skipped']} skipped"
+    )
     return 0
 
 
