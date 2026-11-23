@@ -71,7 +71,10 @@ def main() -> int:
     if result.stdout.count("PASS ") != 8:
         raise RuntimeError("Expected both approaches to pass all eight contract examples")
     (EVIDENCE / "comparison-results.txt").write_text(result.stdout, encoding="utf-8")
-    print(f"{TASK}: both approaches passed 8 examples; {test_result['tests']} reference tests passed")
+    print(
+        f"{TASK}: both approaches passed 8 examples; reference suite: {test_result['tests']} cases "
+        f"discovered, {test_result['failures']} failures, {test_result['skipped']} skipped"
+    )
     return 0
 
 
